@@ -1,0 +1,31 @@
+<mat-toolbar color="primary"> 
+    <span>LOGIN</span>
+  </mat-toolbar>
+  <mat-card class="my-card">
+     <mat-card-content>
+        <form [formGroup]="loginForm" class="my-form" (ngSubmit)="login()">
+           <mat-form-field class="full-width">
+              <mat-label>Email</mat-label>
+              <input  matInput formControlName="email" placeholder="Email" name="email">
+              <div *ngIf="loginForm.controls.email.errors && (loginForm.controls.email.touched || loginForm.controls.email.dirty)" class="invalid-feedback">
+               <div *ngIf="loginForm.controls.email.errors.required">Email is required</div>
+               <div *ngIf="loginForm.controls.email.errors.email">Please enter correct email</div>
+              </div>
+           </mat-form-field>
+           <mat-form-field class="full-width">
+              <mat-label>Password</mat-label>
+              <input type="password"  matInput formControlName="password" placeholder="Password" name="password">
+              <div *ngIf="loginForm.controls.password.errors && (loginForm.controls.password.touched || loginForm.controls.password.dirty)" class="invalid-feedback">
+               <div *ngIf="loginForm.controls.password.errors.required">Password is required</div>
+              </div>
+           </mat-form-field>
+         
+            <mat-card-actions>
+               <button type="submit" mat-raised-button [disabled]="!loginForm.valid" color="primary">LOGIN</button>
+            </mat-card-actions>
+           
+        </form>
+     </mat-card-content>
+     
+  </mat-card>
+  
