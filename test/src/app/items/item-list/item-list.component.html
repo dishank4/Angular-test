@@ -1,0 +1,28 @@
+<mat-table class="lessons-table mat-elevation-z8" [dataSource]="items"
+matSort matSortActive="id" matSortDirection="asc" matSortDisableClear>
+  
+    <ng-container matColumnDef="id">
+        <div *matHeaderCellDef>#</div>
+        <div *matCellDef="let lesson">{{lesson.id}}</div>
+    </ng-container>
+  
+    <ng-container matColumnDef="email">
+        <div *matHeaderCellDef>Email</div>
+        <div class="email-cell"
+                  *matCellDef="let lesson">{{lesson.email}}</div>
+    </ng-container>
+  
+    <ng-container matColumnDef="first_name">
+        <div *matHeaderCellDef>first_name</div>
+        <div class="first-name-cell"
+                  *matCellDef="let lesson">{{lesson.first_name}}</div>
+    </ng-container>
+    
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    
+</mat-table>
+
+<mat-paginator [length]="course?.lessonsCount" [pageSize]="3"
+[pageSizeOptions]="[3, 5, 10]"></mat-paginator>

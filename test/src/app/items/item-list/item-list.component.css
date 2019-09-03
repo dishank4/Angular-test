@@ -1,0 +1,13 @@
+.email-cell {
+    text-align: left;
+    margin: 10px auto;
+}
+
+.first-name-cell {
+    text-align: center;
+}
+
+.lessons-table {
+    min-height: 360px;
+    margin-top: 10px;
+}

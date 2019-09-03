@@ -2,11 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatrialCompModule } from './matrial-comp.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HeaderComponent } from './component/header/header.component';
+import { FooterComponent } from './component/footer/footer.component';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    HeaderComponent,
+    FooterComponent
+  ],
   imports: [
     CommonModule,
     MatrialCompModule,
@@ -14,7 +19,9 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   exports : [
     MatrialCompModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HeaderComponent,
+    FooterComponent
   ]
 })
 export class SharedModule { }
