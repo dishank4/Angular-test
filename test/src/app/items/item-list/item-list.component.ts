@@ -9,6 +9,7 @@ import { ApiService } from 'src/app/core/service/api.service';
 export class ItemListComponent implements OnInit {
 
   items: [];
+  totlaCount: number;
   //https://github.com/angular-university/angular-material-course/tree/2-data-table-finished
   displayedColumns = ['id', 'email', 'first_name'];
   constructor(private apiService: ApiService) { }
@@ -19,6 +20,7 @@ export class ItemListComponent implements OnInit {
     .subscribe((resopnse) => {
       if (resopnse) {
         this.items = resopnse['data'];
+        this.totlaCount = resopnse['total']
       }
     });
   }
