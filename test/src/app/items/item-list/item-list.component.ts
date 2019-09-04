@@ -1,28 +1,85 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort } from '@angular/material';
+import { merge, Observable, of as observableOf} from 'rxjs';
+import {catchError, map, startWith, switchMap} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { ApiService } from 'src/app/core/service/api.service';
+
 
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.css']
 })
-export class ItemListComponent implements OnInit {
+export class ItemListComponent implements  AfterViewInit  {
 
-  items: [];
-  totlaCount: number;
-  //https://github.com/angular-university/angular-material-course/tree/2-data-table-finished
-  displayedColumns = ['id', 'email', 'first_name'];
-  constructor(private apiService: ApiService) { }
+  displayedColumns: string[] = ['created', 'state', 'number', 'title'];
+  exampleDatabase: ExampleHttpDatabase | null;
+  data: GithubIssue[] = [];
 
-  ngOnInit() {
-    //calling mock api from https://reqres.in/
-    this.apiService.get('https://reqres.in/api/users')
-    .subscribe((resopnse) => {
-      if (resopnse) {
-        this.items = resopnse['data'];
-        this.totlaCount = resopnse['total']
-      }
-    });
+  resultsLength = 0;
+  isLoadingResults = true;
+  isRateLimitReached = false;
+
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
+
+  constructor(private apiService: ApiService) {}
+
+  ngAfterViewInit() {
+    this.exampleDatabase = new ExampleHttpDatabase(this.apiService);
+
+    // If the user changes the sort order, reset back to the first page.
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoadingResults = true;
+          return this.exampleDatabase!.getRepoIssues(
+            this.sort.active, this.sort.direction, this.paginator.pageIndex);
+        }),
+        map(data => {
+          // Flip flag to show that loading has finished.
+          this.isLoadingResults = false;
+          this.isRateLimitReached = false;
+          this.resultsLength = data.total_count;
+
+          return data.items;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
+          // Catch if the GitHub API has reached its rate limit. Return empty data.
+          this.isRateLimitReached = true;
+          return observableOf([]);
+        })
+      ).subscribe(data => this.data = data);
+  }
+}
+
+export interface GithubApi {
+  items: GithubIssue[];
+  total_count: number;
+}
+
+export interface GithubIssue {
+  created_at: string;
+  number: string;
+  state: string;
+  title: string;
+}
+
+/** An example database that the data source uses to retrieve data for the table. */
+export class ExampleHttpDatabase {
+  constructor(private apiService: ApiService) {}
+
+  getRepoIssues(sort: string, order: string, page: number): Observable<any> {
+    const href = 'https://api.github.com/search/issues';
+    const requestUrl =
+        `${href}?q=repo:angular/components&sort=${sort}&order=${order}&page=${page + 1}`;
+
+    return this.apiService.get(requestUrl);
   }
 
 }

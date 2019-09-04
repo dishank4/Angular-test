@@ -5,7 +5,7 @@ import { ItemRoutingModule } from './item-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ItemAddComponent } from './item-add/item-add.component';
 import { ItemListComponent } from './item-list/item-list.component';
-import { MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+import { MatTableModule, MatPaginatorModule, MatSortModule, MatSpinner, MatProgressSpinnerModule } from '@angular/material';
 
 
 
@@ -18,6 +18,7 @@ import { MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/mate
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatProgressSpinnerModule
   ]
 })
 export class ItemsModule { }
